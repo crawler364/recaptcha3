@@ -1,23 +1,57 @@
-/*
-grecaptcha.ready(function () {
-    //TODO ajax запрос получить siteKey
-    let siteKey = $.ajax({
-        url: '/local/components/wc.recaptcha3/component.php',
-        async: false,
-        data: {
-            action: 'getSiteKey'
-        }
-    }).responseText;
-    console.log(siteKey);
-    grecaptcha.execute(siteKey, {action: 'homepage'}).then(function (token) {
-        alert(token);
-        //TODO ajax отправить токен пользователя, на бекенде $url = $google_url . "?secret=" . $arSettings["secretkey"] . "&response=" . $arRequest["g-recaptcha-response"] . "&remoteip=" . $server->get('REMOTE_ADDR'); если score нормальный подставить в интпут нужную капчу
+class ReCaptcha3 {
+    constructor(props) {
+        this.props = props;
+    }
 
-    });
-});*/
+    getSiteKey() {
+        BX.ajax.runComponentAction('wc:recaptcha3', 'getParams', {
+            mode: 'class',
+            signedParameters: this.props.signedParameters
+        }).then(function (response) {
+            if (response.status == 'success') {
+                let siteKey = response.data.siteKey;
+                let secretKey = response.data.secretKey;
+                let action = response.data.action;
+                if (typeof (siteKey) != 'undefined' && typeof (secretKey) != 'undefined' && typeof (action) != 'undefined') {
+                    ReCaptcha3.siteVerify(siteKey, secretKey, action);
+                }
+            }
+        });
+    }
 
-BX.ajax.runComponentAction('wc:recaptcha3', 'test', {
-    mode: 'class'
-}).then(function (response) {
-    console.log(response)
-});
+    static siteVerify(siteKey, secretKey, action) {
+        grecaptcha.ready(function () {
+            grecaptcha.execute(siteKey, {action: action}).then(function (token) {
+                BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
+                    mode: 'class',
+                    data: {
+                        secretKey: secretKey,
+                        token: token,
+                    }
+                }).then(function (response) {
+                    if (response.data.response.success == true) {
+                        let catpchaSid = document.getElementById('wcCaptchaSid').value;
+                        ReCaptcha3.getCaptchaWord(catpchaSid).then(function (captchaWord) {
+                            ReCaptcha3.setCaptchaWord(captchaWord);
+                        });
+                    }
+                });
+            });
+        })
+    }
+
+    static setCaptchaWord(captchaWord) {
+        document.getElementById('wcCaptchaWord').value = captchaWord;
+    }
+
+    static getCaptchaWord(catpchaSid) {
+        return BX.ajax.runComponentAction('wc:recaptcha3', 'getCaptchaWord', {
+            mode: 'class',
+            data: {
+                catpchaSid: catpchaSid,
+            }
+        }).then(function (response) {
+            return response.data.captchaWord;
+        });
+    }
+}
