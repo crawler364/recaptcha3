@@ -10,6 +10,6 @@ $APPLICATION->AddHeadScript('https://www.google.com/recaptcha/api.js?render=' . 
 <input id="wcCaptchaSid" type="text" name="captcha_sid" value="<?= htmlspecialcharsbx($arResult['CAPTCHA_SID']); ?>"/>
 <input id="wcCaptchaWord" type="text" name="captcha_word" value=""/>
 <script type="text/javascript">
-    const recaptcha3 = new ReCaptcha3();
-    recaptcha3.handler(<?=Json::encode(['signedParameters' => $this->getComponent()->getSignedParameters()])?>);
+    const recaptcha3 = new ReCaptcha3(<?=Json::encode(['signedParameters' => $this->getComponent()->getSignedParameters()])?>);
+    recaptcha3.handler();
 </script>

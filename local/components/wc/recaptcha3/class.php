@@ -1,7 +1,6 @@
 <?
 
 use Bitrix\Main\Application;
-use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Web\Json;
 
@@ -18,16 +17,14 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
             'siteKey' => $this->arParams['SITE_KEY'],
             'secretKey' => $this->arParams['SECRET_KEY'],
             'action' => $this->arParams['ACTION'],
+            'score' => $this->arParams['SCORE'],
         ];
     }
 
-    public function siteVerifyAction()
+    public function siteVerifyAction($secretKey, $token)
     {
         $server = Application::getInstance()->getContext()->getServer();
         $ip = $server->get('REMOTE_ADDR');
-        $request = Context::getCurrent()->getRequest();
-        $secretKey = $request->get('secretKey');
-        $token = $request->get('token');
         $googleUrl = 'https://www.google.com/recaptcha/api/siteverify';
         $url = "$googleUrl?secret=$secretKey&response=$token&remoteip=$ip";
 
@@ -44,16 +41,14 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
             $curlData = file_get_contents($url);
         }
         if ($curlData) {
-            return ['response' => Json::decode($curlData)];
+            return Json::decode($curlData);
         }
         return null;
     }
 
-    public function getCaptchaWordAction()
+    public function getCaptchaWordAction($catpchaSid)
     {
         global $DB;
-        $request = Context::getCurrent()->getRequest();
-        $catpchaSid = $request->get('catpchaSid');
         $results = $DB->Query("SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$catpchaSid'");
         if ($captchaWord = $results->Fetch()['CODE']) {
             return ['captchaWord' => $captchaWord];
@@ -63,7 +58,6 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
 
     protected function listKeysSignedParameters()
     {
-        return ['SITE_KEY', 'SECRET_KEY', 'ACTION'];
+        return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE'];
     }
-
 }
