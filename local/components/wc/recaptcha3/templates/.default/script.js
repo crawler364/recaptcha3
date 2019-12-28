@@ -36,7 +36,12 @@ class ReCaptcha3 {
             if (!this.isDefined(params)) {
                 return;
             }
-            let token = await grecaptcha.execute(params.data.siteKey, {action: params.data.action});
+            let render = grecaptcha.render('wcReCaptchaBadge', {
+                'sitekey': params.data.siteKey,
+                'badge': params.data.position,
+                'size': 'invisible'
+            });
+            let token = await grecaptcha.execute(render, {action: params.data.action});
             if (!this.isDefined(token)) {
                 return this.error(6);
             }

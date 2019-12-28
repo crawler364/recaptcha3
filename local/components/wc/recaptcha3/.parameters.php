@@ -48,6 +48,16 @@ $arComponentParameters = [
             ],
             'PARENT' => 'BASE',
         ],
+        'POSITION' => [
+            'NAME' => GetMessage('RECAPTCHA_POSITION'),
+            'TYPE' => 'LIST',
+            'VALUES' => [
+                'bottomright' => 'Внизу справа',
+                'bottomleft' => 'Внизу слева',
+                'inline' => 'В форме',
+            ],
+            'PARENT' => 'BASE',
+        ],
     ],
 ];
 ?>

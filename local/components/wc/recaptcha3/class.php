@@ -18,6 +18,7 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
             'secretKey' => $this->arParams['SECRET_KEY'],
             'action' => $this->arParams['ACTION'],
             'score' => $this->arParams['SCORE'],
+            'position' => $this->arParams['POSITION'],
         ];
     }
 
@@ -58,6 +59,6 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
 
     protected function listKeysSignedParameters()
     {
-        return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE'];
+        return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE', 'POSITION'];
     }
 }
