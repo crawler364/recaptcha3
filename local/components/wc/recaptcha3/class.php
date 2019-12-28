@@ -8,8 +8,13 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
 {
     public function configureActions()
     {
-        return [];
+        return [
+            'getParams' => ['prefilters' => [], 'postfilters' => [],],
+            'siteVerify' => ['prefilters' => [], 'postfilters' => [],],
+            'getCaptchaWord' => ['prefilters' => [], 'postfilters' => [],],
+        ];
     }
+
 
     public function getParamsAction()
     {
