@@ -1,57 +1,36 @@
 class ReCaptcha3 {
-    constructor(param) {
-        this.param = param;
-        this.catpchaSid = document.getElementById('wcCaptchaSid').value;
-    }
-
-    async getParams() {
-        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getParams', {
-            mode: 'class',
-            signedParameters: this.param.signedParameters
-        });
-        if (response.status == 'success') {
-            if (!this.isDefined(response.data.siteKey)) {
-                return this.error(1);
-            }
-            if (!this.isDefined(response.data.secretKey)) {
-                return this.error(2);
-            }
-            if (!this.isDefined(response.data.action)) {
-                return this.error(3);
-            }
-            if (!this.isDefined(response.data.score)) {
-                return this.error(4);
-            }
-            return response;
+    async init(param) {
+        this.badgeId = param.badgeId;
+        this.params = await this.getParams(param.signedParameters);
+        this.catpchaSid = document.getElementById(param.captchaSidId).value;
+        this.$captchaWord = document.getElementById(param.captchaWordId);
+        if (!this.params) {
+            return false;
         }
-        return this.error(5);
-    }
-
-    handler() {
         if (!this.isDefined(this.catpchaSid)) {
             return this.error(0);
         }
+        this.handler();
+    }
+
+    handler() {
         grecaptcha.ready(async () => {
-            let params = await this.getParams();
-            if (!this.isDefined(params)) {
-                return;
-            }
-            let render = grecaptcha.render('wcReCaptchaBadge', {
-                'sitekey': params.data.siteKey,
-                'badge': params.data.position,
+            let render = grecaptcha.render(this.badgeId, {
+                'sitekey': this.params.siteKey,
+                'badge': this.params.position,
                 'size': 'invisible'
             });
-            let token = await grecaptcha.execute(render, {action: params.data.action});
+            let token = await grecaptcha.execute(render, {action: this.params.action});
             if (!this.isDefined(token)) {
                 return this.error(6);
             }
-            let siteVerify = await this.siteVerify(params.data.secretKey, token);
+            let siteVerify = await this.siteVerify(this.params.secretKey, token);
             if (!this.isDefined(siteVerify)) {
                 return this.error(7);
             }
             if (siteVerify.data.success == true) {
-                if (siteVerify.data.score >= params.data.score) {
-                    document.getElementById('wcCaptchaWord').value = await this.getCaptchaWord();
+                if (siteVerify.data.score >= this.params.score) {
+                    this.$captchaWord.value = await this.getCaptchaWord();
                 } else {
                     return this.error(8);
                 }
@@ -86,6 +65,33 @@ class ReCaptcha3 {
         return responce.data.captchaWord;
     }
 
+    async getParams(signedParameters) {
+        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getParams', {
+            mode: 'class',
+            signedParameters: signedParameters
+        });
+        if (response.status == 'success') {
+            if (!this.isDefined(response.data.siteKey)) {
+                return this.error(1);
+            }
+            if (!this.isDefined(response.data.secretKey)) {
+                return this.error(2);
+            }
+            if (!this.isDefined(response.data.score)) {
+                return this.error(4);
+            }
+            return response.data;
+        }
+        return this.error(5);
+    }
+
+    isDefined(param) {
+        if (typeof param == 'undefined' || param == '') {
+            return false;
+        }
+        return true;
+    }
+
     error(num) {
         let error;
         switch (num) {
@@ -99,7 +105,7 @@ class ReCaptcha3 {
                 error = `Ошибка #${num}. Не указан секретный ключ.`;
                 break;
             case 3:
-                error = `Ошибка #${num}. Не указан тип действия.`;
+                error = `Ошибка #${num}. `;
                 break;
             case 4:
                 error = `Ошибка #${num}. Не указан минимальный балл.`;
@@ -122,12 +128,5 @@ class ReCaptcha3 {
         }
         console.log(error);
         return false;
-    }
-
-    isDefined(param) {
-        if (typeof param == 'undefined' || param == '') {
-            return false;
-        }
-        return true;
     }
 }

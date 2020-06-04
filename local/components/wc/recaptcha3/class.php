@@ -49,7 +49,6 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
         if ($curlData) {
             return Json::decode($curlData);
         }
-        return null;
     }
 
     public function getCaptchaWordAction($catpchaSid)
@@ -59,7 +58,6 @@ class ReCaptcha3 extends CBitrixComponent implements Controllerable
         if ($captchaWord = $results->Fetch()['CODE']) {
             return ['captchaWord' => $captchaWord];
         }
-        return null;
     }
 
     protected function listKeysSignedParameters()

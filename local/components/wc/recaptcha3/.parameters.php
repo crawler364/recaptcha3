@@ -39,13 +39,7 @@ $arComponentParameters = [
         ],
         'ACTION' => [
             'NAME' => GetMessage('RECAPTCHA_ACTION'),
-            'TYPE' => 'LIST',
-            'VALUES' => [
-                'homepage' => 'homepage',
-                'login' => 'login',
-                'social' => 'social',
-                'e-commerce' => 'e-commerce',
-            ],
+            'TYPE' => 'STRING',
             'PARENT' => 'BASE',
         ],
         'POSITION' => [

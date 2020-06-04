@@ -6,12 +6,12 @@ $MESS ['RECAPTCHA_COMPONENT_DESCRIPTION'] = '
 Ключ сайта - https://www.google.com/recaptcha/.
 Секретный ключ - https://www.google.com/recaptcha/.
 Минимальный балл - 1.0 is very likely a good interaction, 0.0 is very likely a bot.
-Действие - Every site is different, but below are some examples of how sites use the score. As in the examples below, take action behind the scenes instead of blocking traffic to better protect your site.
-    Use case - Recommendation
-    homepage - See a cohesive view of your traffic on the admin console while filtering scrapers.
-    login - With low scores, require 2-factor-authentication or email verification to prevent credential stuffing attacks.
-    social - Limit unanswered friend requests from abusive users and send risky comments to moderation.
-    e-commerce - Put your real sales ahead of bots and identify risky transactions.
+Действие - reCAPTCHA v3 introduces a new concept: actions. When you specify an action name in each place you execute reCAPTCHA, you enable the following new features:
+    A detailed break-down of data for your top ten actions in the admin console
+    Adaptive risk analysis based on the context of the action, because abusive behavior can vary.
+    Importantly, when you verify the reCAPTCHA response, you should verify that the action name is the name you expect.
+    
+    *Note: Actions may only contain alphanumeric characters and slashes, and must not be user-specific.
 Расположение - расположение на странице.
 ';
 ?>
