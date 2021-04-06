@@ -1,5 +1,7 @@
 <?
-if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
+if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
+    die();
+}
 
 $arComponentParameters = [
     'GROUPS' => [
@@ -10,17 +12,17 @@ $arComponentParameters = [
 
     'PARAMETERS' => [
         'SITE_KEY' => [
-            'NAME' => GetMessage('RECAPTCHA_SITE_KEY'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_SITE_KEY'),
             'TYPE' => 'STRING',
             'PARENT' => 'BASE',
         ],
         'SECRET_KEY' => [
-            'NAME' => GetMessage('RECAPTCHA_SECRET_KEY'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_SECRET_KEY'),
             'TYPE' => 'STRING',
             'PARENT' => 'BASE',
         ],
         'SCORE' => [
-            'NAME' => GetMessage('RECAPTCHA_SCORE'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_SCORE'),
             'TYPE' => 'LIST',
             'VALUES' => [
                 '0.0' => '0.0',
@@ -35,23 +37,23 @@ $arComponentParameters = [
                 '0.9' => '0.9',
                 '1.0' => '1.0',
             ],
+            "DEFAULT" => "0.5",
             'PARENT' => 'BASE',
         ],
         'ACTION' => [
-            'NAME' => GetMessage('RECAPTCHA_ACTION'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_ACTION'),
             'TYPE' => 'STRING',
             'PARENT' => 'BASE',
         ],
         'POSITION' => [
-            'NAME' => GetMessage('RECAPTCHA_POSITION'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_POSITION'),
             'TYPE' => 'LIST',
             'VALUES' => [
-                'bottomright' => 'Âíèçó ñïðàâà',
-                'bottomleft' => 'Âíèçó ñëåâà',
-                'inline' => 'Â ôîðìå',
+                'bottomright' => 'Ð’Ð½Ð¸Ð·Ñƒ ÑÐ¿Ñ€Ð°Ð²Ð°',
+                'bottomleft' => 'Ð’Ð½Ð¸Ð·Ñƒ ÑÐ»ÐµÐ²Ð°',
+                'inline' => 'Ð’ Ñ„Ð¾Ñ€Ð¼Ðµ',
             ],
             'PARENT' => 'BASE',
         ],
     ],
 ];
-?>

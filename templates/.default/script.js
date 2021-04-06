@@ -43,7 +43,7 @@ class ReCaptcha3 {
 
     async siteVerify(secretKey, token) {
         let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
-            mode: 'class',
+            mode: 'ajax',
             data: {
                 secretKey: secretKey,
                 token: token,
@@ -57,7 +57,7 @@ class ReCaptcha3 {
 
     async getCaptchaWord() {
         let responce = await BX.ajax.runComponentAction('wc:recaptcha3', 'getCaptchaWord', {
-            mode: 'class',
+            mode: 'ajax',
             data: {
                 catpchaSid: this.catpchaSid,
             }
@@ -67,7 +67,7 @@ class ReCaptcha3 {
 
     async getParams(signedParameters) {
         let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getParams', {
-            mode: 'class',
+            mode: 'ajax',
             signedParameters: signedParameters
         });
         if (response.status == 'success') {
@@ -96,34 +96,34 @@ class ReCaptcha3 {
         let error;
         switch (num) {
             case 0:
-                error = `Ошибка #${num}. Не удалось получить sid капчи.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ sid РєР°РїС‡Рё.`;
                 break;
             case 1:
-                error = `Ошибка #${num}. Не указан ключ сайта.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРєР°Р·Р°РЅ РєР»СЋС‡ СЃР°Р№С‚Р°.`;
                 break;
             case 2:
-                error = `Ошибка #${num}. Не указан секретный ключ.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРєР°Р·Р°РЅ СЃРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡.`;
                 break;
             case 3:
-                error = `Ошибка #${num}. `;
+                error = `РћС€РёР±РєР° #${num}. `;
                 break;
             case 4:
-                error = `Ошибка #${num}. Не указан минимальный балл.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРєР°Р·Р°РЅ РјРёРЅРёРјР°Р»СЊРЅС‹Р№ Р±Р°Р»Р».`;
                 break;
             case 5:
-                error = `Ошибка #${num}. Не удалось получить параметры.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹.`;
                 break;
             case 6:
-                error = `Ошибка #${num}. Не удалось получить токен.`;
+                error = `РћС€РёР±РєР° #${num}. РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ С‚РѕРєРµРЅ.`;
                 break;
             case 7:
-                error = `Ошибка #${num}. API Google: Не удалось получить ответ.`;
+                error = `РћС€РёР±РєР° #${num}. API Google: РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚.`;
                 break;
             case 8:
-                error = `Ошибка #${num}. К сожалению, Google reCaptcha v3 решила, что вы бот :(.`;
+                error = `РћС€РёР±РєР° #${num}. Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, Google reCaptcha v3 СЂРµС€РёР»Р°, С‡С‚Рѕ РІС‹ Р±РѕС‚ :(.`;
                 break;
             case 9:
-                error = `Ошибка #${num}. API Google: не удалось проверить пользователя. ${this.errorCodes}.`;
+                error = `РћС€РёР±РєР° #${num}. API Google: РЅРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. ${this.errorCodes}.`;
                 break;
         }
         console.log(error);

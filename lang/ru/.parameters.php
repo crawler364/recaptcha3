@@ -1,7 +1,6 @@
 <?
-$MESS['RECAPTCHA_SITE_KEY'] = ' Î˛˜ Ò‡ÈÚ‡';
-$MESS['RECAPTCHA_SECRET_KEY'] = '—ÂÍÂÚÌ˚È ÍÎ˛˜';
-$MESS['RECAPTCHA_SCORE'] = 'ÃËÌËÏ‡Î¸Ì˚È ·‡ÎÎ';
-$MESS['RECAPTCHA_ACTION'] = 'ƒÂÈÒÚ‚ËÂ';
-$MESS['RECAPTCHA_POSITION'] = '–‡ÒÔÓÎÓÊÂÌËÂ';
-?>
+$MESS['WC_RECAPTCHA3_SITE_KEY'] = '–ö–ª—é—á —Å–∞–π—Ç–∞';
+$MESS['WC_RECAPTCHA3_SECRET_KEY'] = '–°–µ–∫—Ä–µ—Ç–Ω—ã–π –∫–ª—é—á';
+$MESS['WC_RECAPTCHA3_SCORE'] = '–ú–∏–Ω–∏–º–∞–ª—å–Ω—ã–π –±–∞–ª–ª';
+$MESS['WC_RECAPTCHA3_ACTION'] = '–î–µ–π—Å—Ç–≤–∏–µ';
+$MESS['WC_RECAPTCHA3_POSITION'] = '–†–∞—Å–ø–æ–ª–æ–∂–µ–Ω–∏–µ';

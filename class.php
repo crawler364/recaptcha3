@@ -1,66 +1,21 @@
 <?
 
-use Bitrix\Main\Application;
-use Bitrix\Main\Engine\Contract\Controllerable;
-use Bitrix\Main\Web\Json;
-
-class ReCaptcha3 extends CBitrixComponent implements Controllerable
+class WCReCaptcha3 extends CBitrixComponent
 {
-    public function configureActions()
+    public function executeComponent()
     {
-        return [
-            'getParams' => ['prefilters' => [], 'postfilters' => [],],
-            'siteVerify' => ['prefilters' => [], 'postfilters' => [],],
-            'getCaptchaWord' => ['prefilters' => [], 'postfilters' => [],],
-        ];
+        global $APPLICATION;
+        $uniqid = uniqid();
+        $this->arResult['CAPTCHA_SID_ID'] = 'jsWcCaptchaSid' . $uniqid;
+        $this->arResult['CAPTCHA_WORD_ID'] = 'jsWcCaptchaWord' . $uniqid;
+        $this->arResult['BADGE_ID'] = "jsWcReCaptchaBadge" . $uniqid;
+        $this->arResult['URL'] = 'https://www.google.com/recaptcha/api.js?render=explicit';
+        $this->arResult['CAPTCHA_SID'] = $APPLICATION->CaptchaGetCode();
+
+        $this->includeComponentTemplate();
     }
 
-
-    public function getParamsAction()
-    {
-        return [
-            'siteKey' => $this->arParams['SITE_KEY'],
-            'secretKey' => $this->arParams['SECRET_KEY'],
-            'action' => $this->arParams['ACTION'],
-            'score' => $this->arParams['SCORE'],
-            'position' => $this->arParams['POSITION'],
-        ];
-    }
-
-    public function siteVerifyAction($secretKey, $token)
-    {
-        $server = Application::getInstance()->getContext()->getServer();
-        $ip = $server->get('REMOTE_ADDR');
-        $googleUrl = 'https://www.google.com/recaptcha/api/siteverify';
-        $url = "$googleUrl?secret=$secretKey&response=$token&remoteip=$ip";
-
-        if (function_exists('curl_init')) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-            curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16');
-            $curlData = curl_exec($curl);
-            curl_close($curl);
-        } else {
-            $curlData = file_get_contents($url);
-        }
-        if ($curlData) {
-            return Json::decode($curlData);
-        }
-    }
-
-    public function getCaptchaWordAction($catpchaSid)
-    {
-        global $DB;
-        $results = $DB->Query("SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$catpchaSid'");
-        if ($captchaWord = $results->Fetch()['CODE']) {
-            return ['captchaWord' => $captchaWord];
-        }
-    }
-
-    protected function listKeysSignedParameters()
+    protected function listKeysSignedParameters(): array
     {
         return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE', 'POSITION'];
     }

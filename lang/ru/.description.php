@@ -1,17 +1,16 @@
 <?
-$MESS ['RECAPTCHA_COMPONENT_DEV_NAME'] = 'WC';
-$MESS ['RECAPTCHA_COMPONENT_NAME'] = 'reCAPTCHA v3';
-$MESS ['RECAPTCHA_COMPONENT_DESCRIPTION'] = '
-Êîìïîíåíò íóæíî âñòàâèòü â ôîðìó!
-Êëþ÷ ñàéòà - https://www.google.com/recaptcha/.
-Ñåêðåòíûé êëþ÷ - https://www.google.com/recaptcha/.
-Ìèíèìàëüíûé áàëë - 1.0 is very likely a good interaction, 0.0 is very likely a bot.
-Äåéñòâèå - reCAPTCHA v3 introduces a new concept: actions. When you specify an action name in each place you execute reCAPTCHA, you enable the following new features:
+$MESS ['WC_RECAPTCHA3_COMPONENT_DEV_NAME'] = 'WC';
+$MESS ['WC_RECAPTCHA3_COMPONENT_NAME'] = 'reCAPTCHA v3';
+$MESS ['WC_RECAPTCHA3_COMPONENT_DESCRIPTION'] = '
+ÐšÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ‚ Ð½ÑƒÐ¶Ð½Ð¾ Ð²ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ Ð² Ñ„Ð¾Ñ€Ð¼Ñƒ!
+ÐšÐ»ÑŽÑ‡ ÑÐ°Ð¹Ñ‚Ð° - https://www.google.com/recaptcha/.
+Ð¡ÐµÐºÑ€ÐµÑ‚Ð½Ñ‹Ð¹ ÐºÐ»ÑŽÑ‡ - https://www.google.com/recaptcha/.
+ÐœÐ¸Ð½Ð¸Ð¼Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ð±Ð°Ð»Ð» - 1.0 is very likely a good interaction, 0.0 is very likely a bot.
+Ð”ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ - reCAPTCHA v3 introduces a new concept: actions. When you specify an action name in each place you execute reCAPTCHA, you enable the following new features:
     A detailed break-down of data for your top ten actions in the admin console
     Adaptive risk analysis based on the context of the action, because abusive behavior can vary.
     Importantly, when you verify the reCAPTCHA response, you should verify that the action name is the name you expect.
     
     *Note: Actions may only contain alphanumeric characters and slashes, and must not be user-specific.
-Ðàñïîëîæåíèå - ðàñïîëîæåíèå íà ñòðàíèöå.
+Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ - Ñ€Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð½Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ.
 ';
-?>

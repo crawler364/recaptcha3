@@ -4,16 +4,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 
 $arComponentDescription = [
-    'NAME' => GetMessage('RECAPTCHA_COMPONENT_NAME'),
-    'DESCRIPTION' => GetMessage('RECAPTCHA_COMPONENT_DESCRIPTION'),
+    'NAME' => GetMessage('WC_RECAPTCHA3_COMPONENT_NAME'),
+    'DESCRIPTION' => GetMessage('WC_RECAPTCHA3_COMPONENT_DESCRIPTION'),
     'CACHE_PATH' => 'N',
     'PATH' => [
-        'ID' => GetMessage('RECAPTCHA_COMPONENT_DEV_NAME'),
-        'NAME' => GetMessage('RECAPTCHA_COMPONENT_DEV_NAME'),
+        'ID' => GetMessage('WC_RECAPTCHA3_COMPONENT_DEV_NAME'),
+        'NAME' => GetMessage('WC_RECAPTCHA3_COMPONENT_DEV_NAME'),
         'CHILD' => [
-            'ID' => GetMessage('RECAPTCHA_COMPONENT_NAME'),
-            'NAME' => GetMessage('RECAPTCHA_COMPONENT_NAME'),
+            'ID' => GetMessage('WC_RECAPTCHA3_COMPONENT_NAME'),
+            'NAME' => GetMessage('WC_RECAPTCHA3_COMPONENT_NAME'),
         ],
     ],
 ];
-?>
