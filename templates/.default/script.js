@@ -1,34 +1,42 @@
 class ReCaptcha3 {
-    async init(param) {
-        this.badgeId = param.badgeId;
-        this.params = await this.getParams(param.signedParameters);
-        this.catpchaSid = document.getElementById(param.captchaSidId).value;
-        this.$captchaWord = document.getElementById(param.captchaWordId);
-        if (!this.params) {
-            return false;
-        }
-        if (!this.isDefined(this.catpchaSid)) {
-            return this.error(0);
-        }
+    constructor(params) {
+        this.siteKey = params.siteKey;
+        this.position = params.position;
+        this.action = params.action;
+        this.signedParameters = params.signedParameters;
+    }
+
+    init(params) {
+        this.captchaSidContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-sid'}}, true, false);
+        this.captchaWordContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-word'}}, true, false);
+        this.badgeContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'badge'}}, true, false);
+
         this.handler();
     }
 
     handler() {
         grecaptcha.ready(async () => {
-            let render = grecaptcha.render(this.badgeId, {
-                'sitekey': this.params.siteKey,
-                'badge': this.params.position,
+            console.log(this.siteKey)
+            let render = grecaptcha.render(this.badgeContainer, {
+                'sitekey': this.siteKey,
+                'badge': this.position,
                 'size': 'invisible'
             });
-            let token = await grecaptcha.execute(render, {action: this.params.action});
+            console.log(render);
+            let token = await grecaptcha.execute(render, {action: this.action});
+            console.log(token);
+
             if (!this.isDefined(token)) {
                 return this.error(6);
             }
-            let siteVerify = await this.siteVerify(this.params.secretKey, token);
+
+            let siteVerify = await this.siteVerify(token);
+            console.log(siteVerify);
             if (!this.isDefined(siteVerify)) {
                 return this.error(7);
             }
-            if (siteVerify.data.success == true) {
+
+           /* if (siteVerify.data.success == true) {
                 if (siteVerify.data.score >= this.params.score) {
                     this.$captchaWord.value = await this.getCaptchaWord();
                 } else {
@@ -37,52 +45,32 @@ class ReCaptcha3 {
             } else {
                 this.errorCodes = siteVerify.data["error-codes"].join('; ');
                 return this.error(9);
-            }
+            }*/
         });
     }
 
-    async siteVerify(secretKey, token) {
+    async siteVerify(token) {
         let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
             mode: 'ajax',
             data: {
-                secretKey: secretKey,
                 token: token,
-            }
+            },
+            signedParameters: this.signedParameters,
         });
-        if (response.status == 'success') {
+        if (response.status === 'success') {
             return response;
         }
         return false;
     }
 
     async getCaptchaWord() {
-        let responce = await BX.ajax.runComponentAction('wc:recaptcha3', 'getCaptchaWord', {
+        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getCaptchaWord', {
             mode: 'ajax',
             data: {
-                catpchaSid: this.catpchaSid,
+                captchaSid: this.catpchaSid,
             }
         });
-        return responce.data.captchaWord;
-    }
-
-    async getParams(signedParameters) {
-        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getParams', {
-            mode: 'ajax',
-            signedParameters: signedParameters
-        });
-        if (response.status == 'success') {
-            if (!this.isDefined(response.data.siteKey)) {
-                return this.error(1);
-            }
-            if (!this.isDefined(response.data.secretKey)) {
-                return this.error(2);
-            }
-            if (!this.isDefined(response.data.score)) {
-                return this.error(4);
-            }
-            return response.data;
-        }
-        return this.error(5);
+        return response.data.captchaWord;
     }
 
     isDefined(param) {

@@ -1,20 +1,30 @@
-<?
+<?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     die();
 }
-
-$APPLICATION->AddHeadScript($arResult['URL']);
 ?>
-<input id="<?= $arResult['CAPTCHA_SID_ID'] ?>" class="wc-captcha-sid" type="text" name="captcha_sid"
-       value="<?= htmlspecialcharsbx($arResult['CAPTCHA_SID']); ?>"/>
-<input id="<?= $arResult['CAPTCHA_WORD_ID'] ?>" class="wc-captcha-word" type="text" name="captcha_word" value=""/>
-<div id="<?= $arResult['BADGE_ID'] ?>" class="wc-badge"></div>
+
+<div id="<?= $arResult['CAPTCHA_ID'] ?>" class="wc-recaptcha3">
+    <label>
+        <input type="text" name="CAPTCHA_SID" data-type="captcha-sid" value="<?= $arResult['CAPTCHA_SID'] ?>"/>
+    </label>
+    <label>
+        <input type="text" name="CAPTCHA_WORD" data-type="captcha-word" value=""/>
+    </label>
+    <div class="badge" data-type="badge"></div>
+</div>
+
 <script type="text/javascript">
-    recaptcha3 = new ReCaptcha3();
-    recaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
-        'signedParameters' => $this->getComponent()->getSignedParameters(),
-        'badgeId' => $arResult['BADGE_ID'],
-        'captchaSidId' => $arResult['CAPTCHA_SID_ID'],
-        'captchaWordId' => $arResult['CAPTCHA_WORD_ID'],
+    if (!window.hasOwnProperty('ReCaptcha3')) {
+        window.ReCaptcha3 = new ReCaptcha3(<?=Bitrix\Main\Web\Json::encode([
+            'siteKey' => $arParams['SITE_KEY'],
+            'position' => $arParams['POSITION'],
+            'action' => $arParams['ACTION'],
+            'signedParameters'=> $this->getComponent()->getSignedParameters(),
+        ])?>);
+    }
+
+    window.ReCaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
+        'captchaId' => $arResult['CAPTCHA_ID'],
     ])?>);
 </script>
