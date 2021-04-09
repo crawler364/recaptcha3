@@ -11,7 +11,6 @@ class WCReCaptcha3 extends CBitrixComponent
     {
         global $APPLICATION;
 
-        $this->arResult['CAPTCHA_ID'] = uniqid();
         $this->arResult['CAPTCHA_SID'] = $APPLICATION->CaptchaGetCode();
 
         $this->includeComponentTemplate();
