@@ -4,15 +4,10 @@ class ReCaptcha3 {
         this.position = params.position;
         this.action = params.action;
         this.signedParameters = params.signedParameters;
-    }
-
-    init(params) {
         this.captchaSid = params.captchaSid;
-        this.captchaSidContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-sid'}}, true, false);
-        this.captchaWordContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-word'}}, true, false);
-        this.badgeContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'badge'}}, true, false);
-
-        this.handler().then();
+        this.captchaSidContainer = BX.findChild(BX('wc-recaptcha3'), {attribute: {'data-type': 'captcha-sid'}}, true, false);
+        this.captchaWordContainer = BX.findChild(BX('wc-recaptcha3'), {attribute: {'data-type': 'captcha-word'}}, true, false);
+        this.badgeContainer = BX.findChild(BX('wc-recaptcha3'), {attribute: {'data-type': 'badge'}}, true, false);
     }
 
     async handler() {

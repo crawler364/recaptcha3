@@ -18,3 +18,6 @@ Importantly, when you verify the reCAPTCHA response, you should verify that the 
 ### Системные требования
 * 1C-Битрикс: 17.5.10
 * Кодировка: UTF-8
+
+### Примечания
+* Проверка капчи на стороне битрикса производится с помощью CMain::CaptchaCheckCode(captcha_word,captcha_sid);

@@ -4,12 +4,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 }
 ?>
 
-<div id="<?= $arResult['CAPTCHA_ID'] ?>" class="wc-recaptcha3">
+<div id="wc-recaptcha3">
     <label>
-        <input type="hidden" name="CAPTCHA_SID" data-type="captcha-sid" value="<?= $arResult['CAPTCHA_SID'] ?>"/>
+        <input type="hidden" name="captcha_sid" data-type="captcha-sid" value="<?= $arResult['CAPTCHA_SID'] ?>"/>
     </label>
     <label>
-        <input type="hidden" name="CAPTCHA_WORD" data-type="captcha-word" value=""/>
+        <input type="hidden" name="captcha_word" data-type="captcha-word" value=""/>
     </label>
     <div class="badge" data-type="badge"></div>
 </div>
@@ -21,12 +21,10 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
                 'siteKey' => $arParams['SITE_KEY'],
                 'position' => $arParams['POSITION'],
                 'action' => $arParams['ACTION'],
+                'captchaSid' => $arResult['CAPTCHA_SID'],
                 'signedParameters' => $this->getComponent()->getSignedParameters(),
             ])?>);
-            reCaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
-                'captchaId' => $arResult['CAPTCHA_ID'],
-                'captchaSid' => $arResult['CAPTCHA_SID'],
-            ])?>);
+            reCaptcha3.handler();
         })
     });
 </script>
