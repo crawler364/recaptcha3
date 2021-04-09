@@ -10,12 +10,13 @@ class ReCaptcha3 {
         this.captchaSid = params.captchaSid;
         this.captchaSidContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-sid'}}, true, false);
         this.captchaWordContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-word'}}, true, false);
+        this.badgeContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'badge'}}, true, false);
 
         this.handler().then();
     }
 
     async handler() {
-        let render = await grecaptcha.render(BX('badge'), {
+        let render = await grecaptcha.render(this.badgeContainer, {
             'sitekey': this.siteKey,
             'badge': this.position,
             'size': 'invisible'
