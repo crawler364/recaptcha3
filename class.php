@@ -2,6 +2,11 @@
 
 class WCReCaptcha3 extends CBitrixComponent
 {
+    protected function listKeysSignedParameters(): array
+    {
+        return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE', 'POSITION'];
+    }
+
     public function executeComponent()
     {
         global $APPLICATION;
@@ -10,10 +15,5 @@ class WCReCaptcha3 extends CBitrixComponent
         $this->arResult['CAPTCHA_SID'] = $APPLICATION->CaptchaGetCode();
 
         $this->includeComponentTemplate();
-    }
-
-    protected function listKeysSignedParameters(): array
-    {
-        return ['SITE_KEY', 'SECRET_KEY', 'ACTION', 'SCORE', 'POSITION'];
     }
 }

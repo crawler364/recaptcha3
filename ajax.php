@@ -1,49 +1,62 @@
 <?php
 
 use Bitrix\Main\Engine\Controller;
+use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Response\AjaxJson;
+use Bitrix\Main\Error;
+use Bitrix\Main\Result;
+use Bitrix\Main\Web\HttpClient;
+use Bitrix\Main\Web\Json;
 
 class WCReCaptcha3AjaxController extends Controller
 {
     public function configureActions(): array
     {
         return [
-            'getParams' => [
-                'prefilters' => [], 'postfilters' => [],
-            ],
             'siteVerify' => [
                 'prefilters' => [], 'postfilters' => [],
             ],
-            'getCaptchaWord' => [
+            'processCaptcha' => [
                 'prefilters' => [], 'postfilters' => [],
             ],
         ];
     }
 
-    public function siteVerifyAction($token)
+    public function siteVerifyAction($token): AjaxJson
     {
-        $result = new \Bitrix\Main\Result();
-        $httpClient = new \Bitrix\Main\Web\HttpClient();
+        $result = new Result();
+        $httpClient = new HttpClient();
         $unsignedParameters = $this->getUnsignedParameters();
-        $ip = \Bitrix\Main\Context::getCurrent()->getServer()->get('REMOTE_ADDR');
+        $ip = Context::getCurrent()->getServer()->get('REMOTE_ADDR');
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $url = "$url?secret={$unsignedParameters['SECRET_KEY']}&response=$token&remoteip=$ip";
 
-        if ($get = $httpClient->get($url)) {
-            $result->setData(\Bitrix\Main\Web\Json::decode($get));
+        $get = $httpClient->get($url);
+        $get = Json::decode($get);
+
+        if ($get['success'] === true) {
+            $result->setData($get);
         } else {
-            $result->addError();
+            foreach ($get['error-codes'] as $key => $errorCode) {
+                $error = new Error($errorCode, $key);
+                $result->addError($error);
+            }
         }
 
-        return new AjaxJson($result->getData(), 'success', $result->getErrorCollection());
+        $isSuccess = $result->isSuccess() ? AjaxJson::STATUS_SUCCESS : AjaxJson::STATUS_ERROR;
+
+        return new AjaxJson($result->getData(), $isSuccess, $result->getErrorCollection());
     }
 
-    public function getCaptchaWordAction($captchaSid): array
+    public function processCaptchaAction($captchaSid)
     {
+        $result = new Result();
         global $DB;
         $results = $DB->Query("SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'");
         if ($captchaWord = $results->Fetch()['CODE']) {
             return ['captchaWord' => $captchaWord];
         }
     }
+
+
 }

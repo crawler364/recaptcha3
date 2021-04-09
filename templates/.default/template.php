@@ -20,11 +20,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
             'siteKey' => $arParams['SITE_KEY'],
             'position' => $arParams['POSITION'],
             'action' => $arParams['ACTION'],
-            'signedParameters'=> $this->getComponent()->getSignedParameters(),
+            'signedParameters' => $this->getComponent()->getSignedParameters(),
         ])?>);
     }
 
     window.ReCaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
         'captchaId' => $arResult['CAPTCHA_ID'],
+        'captchaSid' => $arResult['CAPTCHA_SID'],
     ])?>);
 </script>

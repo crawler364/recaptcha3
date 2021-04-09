@@ -7,6 +7,7 @@ class ReCaptcha3 {
     }
 
     init(params) {
+        this.captchaSid = params.captchaSid;
         this.captchaSidContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-sid'}}, true, false);
         this.captchaWordContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-word'}}, true, false);
         this.badgeContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'badge'}}, true, false);
@@ -16,68 +17,40 @@ class ReCaptcha3 {
 
     handler() {
         grecaptcha.ready(async () => {
-            console.log(this.siteKey)
             let render = grecaptcha.render(this.badgeContainer, {
                 'sitekey': this.siteKey,
                 'badge': this.position,
                 'size': 'invisible'
             });
-            console.log(render);
             let token = await grecaptcha.execute(render, {action: this.action});
-            console.log(token);
 
-            if (!this.isDefined(token)) {
-                return this.error(6);
-            }
+            let siteVerify = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
+                mode: 'ajax',
+                data: {token: token},
+                signedParameters: this.signedParameters,
+            });
 
-            let siteVerify = await this.siteVerify(token);
-            console.log(siteVerify);
-            if (!this.isDefined(siteVerify)) {
-                return this.error(7);
-            }
+            if (siteVerify.status === 'success') {
+                let processCaptcha = await BX.ajax.runComponentAction('wc:recaptcha3', 'processCaptcha', {
+                    mode: 'ajax',
+                    data: {
+                        captchaSid: this.captchaSid,
+                    }
+                });
 
-           /* if (siteVerify.data.success == true) {
-                if (siteVerify.data.score >= this.params.score) {
-                    this.$captchaWord.value = await this.getCaptchaWord();
+                if (processCaptcha.status === 'success') {
+                    console.log(processCaptcha);
                 } else {
-                    return this.error(8);
+
                 }
             } else {
-                this.errorCodes = siteVerify.data["error-codes"].join('; ');
-                return this.error(9);
-            }*/
-        });
-    }
-
-    async siteVerify(token) {
-        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
-            mode: 'ajax',
-            data: {
-                token: token,
-            },
-            signedParameters: this.signedParameters,
-        });
-        if (response.status === 'success') {
-            return response;
-        }
-        return false;
-    }
-
-    async getCaptchaWord() {
-        let response = await BX.ajax.runComponentAction('wc:recaptcha3', 'getCaptchaWord', {
-            mode: 'ajax',
-            data: {
-                captchaSid: this.catpchaSid,
+                siteVerify.errors.forEach(function (error) {
+                    console.error(error.message);
+                });
             }
-        });
-        return response.data.captchaWord;
-    }
 
-    isDefined(param) {
-        if (typeof param == 'undefined' || param == '') {
-            return false;
-        }
-        return true;
+
+        });
     }
 
     error(num) {
