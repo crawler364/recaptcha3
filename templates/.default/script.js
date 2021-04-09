@@ -10,47 +10,48 @@ class ReCaptcha3 {
         this.captchaSid = params.captchaSid;
         this.captchaSidContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-sid'}}, true, false);
         this.captchaWordContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'captcha-word'}}, true, false);
-        this.badgeContainer = BX.findChild(BX(params.captchaId), {attribute: {'data-type': 'badge'}}, true, false);
 
-        this.handler();
+        this.handler().then();
     }
 
-    handler() {
-        grecaptcha.ready(async () => {
-            let render = grecaptcha.render(this.badgeContainer, {
-                'sitekey': this.siteKey,
-                'badge': this.position,
-                'size': 'invisible'
-            });
-            let token = await grecaptcha.execute(render, {action: this.action});
+    async handler() {
+        let render = grecaptcha.render(BX('badge'), {
+            'sitekey': this.siteKey,
+            'badge': this.position,
+            'size': 'invisible'
+        });
+        let token = await grecaptcha.execute(render, {
+            action: this.action
+        });
+        let siteVerify = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
+            mode: 'ajax',
+            data: {token: token},
+            signedParameters: this.signedParameters,
+        });
+        console.log(siteVerify)
 
-            let siteVerify = await BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
+        if (siteVerify.status === 'success') {
+            let processCaptcha = await BX.ajax.runComponentAction('wc:recaptcha3', 'processCaptcha', {
                 mode: 'ajax',
-                data: {token: token},
-                signedParameters: this.signedParameters,
+                data: {
+                    captchaSid: this.captchaSid,
+                }
             });
 
-            if (siteVerify.status === 'success') {
-                let processCaptcha = await BX.ajax.runComponentAction('wc:recaptcha3', 'processCaptcha', {
-                    mode: 'ajax',
-                    data: {
-                        captchaSid: this.captchaSid,
-                    }
-                });
-
-                if (processCaptcha.status === 'success') {
-                    console.log(processCaptcha);
-                } else {
-
-                }
+            if (processCaptcha.status === 'success') {
+                this.captchaWordContainer.value = processCaptcha.data.captchaWord;
             } else {
-                siteVerify.errors.forEach(function (error) {
+                processCaptcha.errors.forEach(function (error) {
                     console.error(error.message);
                 });
             }
+        } else {
+            siteVerify.errors.forEach(function (error) {
+                console.error(error.message);
+            });
+        }
 
 
-        });
     }
 
     error(num) {

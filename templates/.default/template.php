@@ -11,21 +11,23 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
     <label>
         <input type="text" name="CAPTCHA_WORD" data-type="captcha-word" value=""/>
     </label>
-    <div class="badge" data-type="badge"></div>
 </div>
 
-<script type="text/javascript">
-    if (!window.hasOwnProperty('ReCaptcha3')) {
-        window.ReCaptcha3 = new ReCaptcha3(<?=Bitrix\Main\Web\Json::encode([
-            'siteKey' => $arParams['SITE_KEY'],
-            'position' => $arParams['POSITION'],
-            'action' => $arParams['ACTION'],
-            'signedParameters' => $this->getComponent()->getSignedParameters(),
-        ])?>);
-    }
+<div id="badge" class="badge" data-type="badge"></div>
 
-    window.ReCaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
-        'captchaId' => $arResult['CAPTCHA_ID'],
-        'captchaSid' => $arResult['CAPTCHA_SID'],
-    ])?>);
+<script type="text/javascript">
+    BX.ready(function () {
+        grecaptcha.ready(function () {
+            let reCaptcha3 = new ReCaptcha3(<?=Bitrix\Main\Web\Json::encode([
+                'siteKey' => $arParams['SITE_KEY'],
+                'position' => $arParams['POSITION'],
+                'action' => $arParams['ACTION'],
+                'signedParameters' => $this->getComponent()->getSignedParameters(),
+            ])?>);
+            reCaptcha3.init(<?=Bitrix\Main\Web\Json::encode([
+                'captchaId' => $arResult['CAPTCHA_ID'],
+                'captchaSid' => $arResult['CAPTCHA_SID'],
+            ])?>);
+        })
+    });
 </script>

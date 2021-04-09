@@ -51,12 +51,20 @@ class WCReCaptcha3AjaxController extends Controller
     public function processCaptchaAction($captchaSid)
     {
         $result = new Result();
-        global $DB;
-        $results = $DB->Query("SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'");
-        if ($captchaWord = $results->Fetch()['CODE']) {
-            return ['captchaWord' => $captchaWord];
-        }
-    }
+        $connection = \Bitrix\Main\Application::getConnection();
+        $sql = "SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'";
 
+        $recordset = $connection->query($sql);
+        if ($record = $recordset->fetch()) {
+            $result->setData(['captchaWord'=>$record['CODE']]);
+        } else {
+            $error = new Error('captchaWord');
+            $result->addError($error);
+        }
+
+        $isSuccess = $result->isSuccess() ? AjaxJson::STATUS_SUCCESS : AjaxJson::STATUS_ERROR;
+
+        return new AjaxJson($result->getData(), $isSuccess, $result->getErrorCollection());
+    }
 
 }
