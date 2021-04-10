@@ -1,5 +1,6 @@
 <?php
 
+use Bitrix\Main\Application;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Response\AjaxJson;
@@ -7,22 +8,20 @@ use Bitrix\Main\Error;
 use Bitrix\Main\Result;
 use Bitrix\Main\Web\HttpClient;
 use Bitrix\Main\Web\Json;
+use Bitrix\Main\Localization\Loc;
 
 class WCReCaptcha3AjaxController extends Controller
 {
     public function configureActions(): array
     {
         return [
-            'siteVerify' => [
-                'prefilters' => [], 'postfilters' => [],
-            ],
             'processCaptcha' => [
                 'prefilters' => [], 'postfilters' => [],
             ],
         ];
     }
 
-    public function siteVerifyAction($token): AjaxJson
+    public function processCaptchaAction($token, $captchaSid): AjaxJson
     {
         $result = new Result();
         $httpClient = new HttpClient();
@@ -35,7 +34,13 @@ class WCReCaptcha3AjaxController extends Controller
             $get = $httpClient->get($url);
             $get = Json::decode($get);
             if ($get['success'] === true) {
-                $result->setData($get);
+                if ($get['score'] >= $unsignedParameters['SCORE']) {
+                    $captchaWord = $this->getCaptchaWord($captchaSid);
+                    $result->setData(['captchaWord' => $captchaWord]);
+                } else {
+                    $error = new Error(Loc::getMessage('WC_RECAPTCHA3_FAILED'));
+                    $result->addError($error);
+                }
             } else {
                 foreach ($get['error-codes'] as $key => $errorCode) {
                     $error = new Error($errorCode, $key);
@@ -52,19 +57,16 @@ class WCReCaptcha3AjaxController extends Controller
         return new AjaxJson($result->getData(), $isSuccess, $result->getErrorCollection());
     }
 
-    public function processCaptchaAction($captchaSid): AjaxJson
+    private function getCaptchaWord($captchaSid)
     {
-        $result = new Result();
-        $connection = \Bitrix\Main\Application::getConnection();
+        $connection = Application::getConnection();
         $sql = "SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'";
 
         $recordset = $connection->query($sql);
         if ($record = $recordset->fetch()) {
-            $result->setData(['captchaWord' => $record['CODE']]);
+            return $record['CODE'];
         }
 
-        $isSuccess = $result->isSuccess() ? AjaxJson::STATUS_SUCCESS : AjaxJson::STATUS_ERROR;
-
-        return new AjaxJson($result->getData(), $isSuccess, $result->getErrorCollection());
+        return null;
     }
 }

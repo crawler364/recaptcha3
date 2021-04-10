@@ -4,7 +4,7 @@ class WCReCaptcha3 extends CBitrixComponent
 {
     protected function listKeysSignedParameters(): array
     {
-        return ['SECRET_KEY'];
+        return ['SECRET_KEY', 'SCORE'];
     }
 
     public function executeComponent()

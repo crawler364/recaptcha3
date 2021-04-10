@@ -20,23 +20,12 @@ class ReCaptcha3 {
             action: this.action
         });
 
-        BX.ajax.runComponentAction('wc:recaptcha3', 'siteVerify', {
+        BX.ajax.runComponentAction('wc:recaptcha3', 'processCaptcha', {
             mode: 'ajax',
-            data: {token: token},
+            data: {token: token, captchaSid: this.captchaSid},
             signedParameters: this.signedParameters,
         }).then((response) => {
-            BX.ajax.runComponentAction('wc:recaptcha3', 'processCaptcha', {
-                mode: 'ajax',
-                data: {
-                    captchaSid: this.captchaSid,
-                }
-            }).then((response) => {
-                this.captchaWordContainer.value = response.data.captchaWord;
-            }, (response) => {
-                response.errors.forEach(function (error) {
-                    console.error(error.message);
-                });
-            });
+            this.captchaWordContainer.value = response.data.captchaWord;
         }, (response) => {
             response.errors.forEach(function (error) {
                 console.error(error.message);
