@@ -38,7 +38,7 @@ class WCReCaptcha3AjaxController extends Controller
                     $captchaWord = $this->getCaptchaWord($captchaSid);
                     $result->setData(['captchaWord' => $captchaWord]);
                 } else {
-                    $error = new Error(Loc::getMessage('WC_RECAPTCHA3_FAILED'));
+                    $error = new Error(Loc::getMessage('WC_RECAPTCHA3_VERIFY_FAILED'));
                     $result->addError($error);
                 }
             } else {
