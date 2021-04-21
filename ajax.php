@@ -5,10 +5,12 @@ use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Response\AjaxJson;
 use Bitrix\Main\Error;
+use Bitrix\Main\Loader;
 use Bitrix\Main\Result;
 use Bitrix\Main\Web\HttpClient;
 use Bitrix\Main\Web\Json;
 use Bitrix\Main\Localization\Loc;
+use WC\Core\ORM\Captcha\CaptchaTable;
 
 class WCReCaptcha3AjaxController extends Controller
 {
@@ -59,12 +61,21 @@ class WCReCaptcha3AjaxController extends Controller
 
     private function getCaptchaWord($captchaSid)
     {
-        $connection = Application::getConnection();
-        $sql = "SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'";
-
-        $recordset = $connection->query($sql);
-        if ($record = $recordset->fetch()) {
-            return $record['CODE'];
+        if (Loader::includeModule('wc.core')) {
+            $dbRes = CaptchaTable::getList([
+                'select' => ['CODE'],
+                'filter' => ['ID' => $captchaSid],
+            ]);
+            if ($captcha = $dbRes->fetch()) {
+                return $captcha['CODE'];
+            }
+        } else {
+            $connection = Application::getConnection();
+            $sql = "SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'";
+            $recordset = $connection->query($sql);
+            if ($record = $recordset->fetch()) {
+                return $record['CODE'];
+            }
         }
 
         return null;

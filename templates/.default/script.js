@@ -27,7 +27,7 @@ class ReCaptcha3 {
             this.captchaWordContainer.value = response.data.captchaWord;
         }, (response) => {
             response.errors.forEach(function (error) {
-                console.error(error.message);
+                console.log(error.message);
             });
         });
     }
