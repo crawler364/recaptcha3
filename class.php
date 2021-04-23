@@ -9,9 +9,9 @@ class WCReCaptcha3 extends CBitrixComponent
 
     public function executeComponent()
     {
-        global $APPLICATION;
-
-        $this->arResult['CAPTCHA_SID'] = $APPLICATION->CaptchaGetCode();
+        $captcha = new CCaptcha();
+        $captcha->SetCode();
+        $this->arResult['CAPTCHA_SID'] = $captcha->GetSID();
 
         $this->includeComponentTemplate();
     }

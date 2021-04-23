@@ -25,6 +25,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
                 'signedParameters' => $this->getComponent()->getSignedParameters(),
             ])?>);
             reCaptcha3.handler();
-        })
+        });
     });
 </script>

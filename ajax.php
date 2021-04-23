@@ -1,6 +1,5 @@
 <?php
 
-use Bitrix\Main\Application;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Response\AjaxJson;
@@ -64,18 +63,15 @@ class WCReCaptcha3AjaxController extends Controller
         if (Loader::includeModule('wc.core')) {
             $dbRes = CaptchaTable::getList([
                 'select' => ['CODE'],
-                'filter' => ['ID' => $captchaSid],
+                'filter' => ['=ID' => $captchaSid],
             ]);
             if ($captcha = $dbRes->fetch()) {
                 return $captcha['CODE'];
             }
         } else {
-            $connection = Application::getConnection();
-            $sql = "SELECT distinct `CODE` FROM `b_captcha` WHERE `ID`='$captchaSid'";
-            $recordset = $connection->query($sql);
-            if ($record = $recordset->fetch()) {
-                return $record['CODE'];
-            }
+            $captcha = new CCaptcha();
+            $captcha->InitCode($captchaSid);
+            return $captcha->code;
         }
 
         return null;
